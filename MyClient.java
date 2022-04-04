@@ -72,11 +72,7 @@ public class MyClient {
       int maxServerIDcount = 0;
       for (int i = 0; i < servers.length; i++) {
         if (servers[maxServerIndex].split(" ")[0].equals(servers[i].split(" ")[0])) {
-          System.out.println(
-              "Max Server Count: '" + maxServerIDcount + "'");
-          // System.out.println(""Server " + maxServerIDcount + " " + servers[i].split("
-          // ")+);
-        //  maxServerIDcount = maxServerIDcount + 1;
+          maxServerIDcount = maxServerIDcount + 1;
         }
       }
       System.out.println(
@@ -88,21 +84,22 @@ public class MyClient {
 
       int jobID = 0;
       int serverID = 0;
-      System.out.println(maxServerIDcount);
+      int count = 0;
+    
       while (!(noneDetector[0].equals("NONE"))) {
         //if (jobID != (maxServerIDcount - 1)) {
           //for (int i = 0; i < maxServerIDcount; i++) {
             if (noneDetector[0] .equals("JOBN")){
+            //serverID = (serverID % maxServerIDcount);
             dout.write(
                 ("SCHD " + jobID +" " + servers[maxServerIndex].split(" ")[0] +" " + serverID +"\n").getBytes());
             dout.flush();
-            //jobID++;
-            //serverID++;
-            if (maxServerIDcount >= serverID +1){
-              serverID++;
-            } else {
+            if ((serverID +1) == maxServerIDcount){
               serverID = 0;
-            } 
+            }
+            else{
+              serverID++;
+            }
             jobID++;
             //dout.write(("REDY\n").getBytes());
             dout.flush();
@@ -113,7 +110,8 @@ public class MyClient {
           dout.flush();
           str = (String) dis.readLine();
           noneDetector = str.split(" ");
-          System.out.println(noneDetector[0]);
+          count++;
+          System.out.println(Integer.toString(count)+" "+ noneDetector[0]);
 
 
         } //else {
