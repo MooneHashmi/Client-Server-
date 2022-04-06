@@ -6,9 +6,7 @@ public class MyClient {
   public static void main(String[] args) {
     try {
       Socket s = new Socket("localhost", 50000);
-      BufferedReader dis = new BufferedReader(
-          new InputStreamReader(s.getInputStream()));
-      // DataInputStream dis=new DataInputStream(s.getInputStream());
+      BufferedReader dis = new BufferedReader(new InputStreamReader(s.getInputStream()));
       DataOutputStream dout = new DataOutputStream(s.getOutputStream());
 
       // Sending HELO
@@ -34,17 +32,18 @@ public class MyClient {
       dout.flush();
 
       // GETS Capable All
-
       str = (String) dis.readLine();
       String[] noneDetector = str.split(" ");
       System.out.println(noneDetector[0]);
       System.out.println(str);
-      if (noneDetector[0] != "NONE")
+      if (noneDetector[0] != "NONE"){
         dout.write(("GETS All\n").getBytes());
-      dout.flush();
+        dout.flush();
+      }
+        
 
-
-      // Receiving Data x x
+      // Receiving Data in a single line that has String "DATA", no of servers and ---, seperated by spaces. 
+      // We use split() method to separate each of the three elements in a list called data.
       str = (String) dis.readLine();
       String[] data = str.split(" ");
 
@@ -52,6 +51,7 @@ public class MyClient {
       dout.write(("OK\n").getBytes());
       dout.flush();
 
+      // Recieving each server and storing it in a list called servers
       String[] servers = new String[Integer.parseInt(data[1])];
       for (int i = 0; i < Integer.parseInt(data[1]); i++) {
         str = (String) dis.readLine();
@@ -61,7 +61,9 @@ public class MyClient {
       dout.write(("OK\n").getBytes());
       dout.flush();
 
+      // inilialised a variable called maxServerIndex that would store index of the first server that has the highest core
       int maxServerIndex = 0;
+      // used a for loop that would iterate over each of the server in the servers list and update value of maxServerIndex. 
       for (int i = 1; i < servers.length; i++) {
         String[] maxServer = servers[maxServerIndex].split(" ");
         String[] currentServer = servers[i].split(" ");
@@ -69,31 +71,28 @@ public class MyClient {
           maxServerIndex = i;
         }
       }
+      // inilialised a variable called maxServerIDcount that would store the total number of servers in the list with a max core value
       int maxServerIDcount = 0;
+      // used a for loop that would increment maxServerIDcount whenever a server is found that has a max core
       for (int i = 0; i < servers.length; i++) {
         if (servers[maxServerIndex].split(" ")[0].equals(servers[i].split(" ")[0])) {
           maxServerIDcount = maxServerIDcount + 1;
         }
       }
-      System.out.println(
-          "Max Server: '" +
-              servers[maxServerIndex] +
-              "Count: " +
-              maxServerIDcount +
-              "'");
+      // printing details of the max server and its count
+      System.out.println("Max Server: '" + servers[maxServerIndex] + "Count: " + maxServerIDcount +"'");
 
+      // jobID is a variable that stored the counter for each job found
       int jobID = 0;
+      // serverID ranges within 0 and maxServerIDcount(exclusive). This variable is used to schedule jobs to this server
       int serverID = 0;
-      int count = 0;
-    
+      // the loop will stop iterating if jobtype is None
       while (!(noneDetector[0].equals("NONE"))) {
-        //if (jobID != (maxServerIDcount - 1)) {
-          //for (int i = 0; i < maxServerIDcount; i++) {
+          // if jobtype is JOBN it will schedule this job 
             if (noneDetector[0] .equals("JOBN")){
-            //serverID = (serverID % maxServerIDcount);
-            dout.write(
-                ("SCHD " + jobID +" " + servers[maxServerIndex].split(" ")[0] +" " + serverID +"\n").getBytes());
+            dout.write(("SCHD " + jobID +" " + servers[maxServerIndex].split(" ")[0] +" " + serverID +"\n").getBytes());
             dout.flush();
+            // this if-else cond makes sure serverID is in the range(0,maxServerIDcount)
             if ((serverID +1) == maxServerIDcount){
               serverID = 0;
             }
@@ -101,8 +100,8 @@ public class MyClient {
               serverID++;
             }
             jobID++;
-            //dout.write(("REDY\n").getBytes());
             dout.flush();
+            // takes the next job and stores it for the next iteration of the while loop
             str = (String) dis.readLine();
             noneDetector = str.split(" ");
           }
@@ -110,14 +109,10 @@ public class MyClient {
           dout.flush();
           str = (String) dis.readLine();
           noneDetector = str.split(" ");
-          count++;
-          System.out.println(Integer.toString(count)+" "+ noneDetector[0]);
+          System.out.println(Integer.toString(jobID)+ " "+ noneDetector[0]);
 
 
-        } //else {
-          //jobID = 0;
-       // }
-     // }
+      }
 
       dout.write(("QUIT\n").getBytes());
       dout.flush();
@@ -129,7 +124,8 @@ public class MyClient {
       s.close();
 
       System.exit(0);
-    } catch (Exception e) {
+    } 
+    catch (Exception e) {
       System.out.println(e);
     }
   }
