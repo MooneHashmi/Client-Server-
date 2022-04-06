@@ -42,7 +42,7 @@ public class MyClient {
       }
         
 
-      // Receiving Data in a single line that has String "DATA", no of servers and ---, seperated by spaces. 
+      // Receiving Data in a single line that has String "DATA", no of servers and the length of each server, seperated by spaces. 
       // We use split() method to separate each of the three elements in a list called data.
       str = (String) dis.readLine();
       String[] data = str.split(" ");
@@ -61,7 +61,7 @@ public class MyClient {
       dout.write(("OK\n").getBytes());
       dout.flush();
 
-      // inilialised a variable called maxServerIndex that would store index of the first server that has the highest core
+      // inilialised a variable called maxServerIndex that would store index of the first server that has the highest core value.
       int maxServerIndex = 0;
       // used a for loop that would iterate over each of the server in the servers list and update value of maxServerIndex. 
       for (int i = 1; i < servers.length; i++) {
@@ -71,12 +71,12 @@ public class MyClient {
           maxServerIndex = i;
         }
       }
-      // inilialised a variable called maxServerIDcount that would store the total number of servers in the list with a max core value
+      // inilialised a variable called maxServerIDcount that would store the total number of servers in the list of the max core value
       int maxServerIDcount = 0;
       // used a for loop that would increment maxServerIDcount whenever a server is found that has a max core
       for (int i = 0; i < servers.length; i++) {
         if (servers[maxServerIndex].split(" ")[0].equals(servers[i].split(" ")[0])) {
-          maxServerIDcount = maxServerIDcount + 1;
+          maxServerIDcount ++;
         }
       }
       // printing details of the max server and its count
