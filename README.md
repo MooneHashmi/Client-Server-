@@ -1,2 +1,1 @@
-Comp3100
-Workshop 2
+The primary purpose of Stage 1 was to design and implement a plain/vanilla version of a Client-side simulator that acts as a simple job dispatcher. My client (client-side simulator) will communicate with the ds-server and schedule jobs to the ds-server using a specific algorithm called Largest Round Robin(LRR).
